@@ -8,8 +8,10 @@
   const auth = window.KovrioAuth;
   const next = auth ? auth.safeNext(new URLSearchParams(location.search).get("next")) : "/index.html";
 
+  // `next` always starts with "/" (safeNext guarantees it), so it's a full
+  // path on this site. Bare "/" is the home page.
   function goToApp() {
-    location.replace(next.replace(/^\//, ""));
+    location.replace(next === "/" ? "/index.html" : next);
   }
 
   // Turn Supabase's error messages into something a student understands.
