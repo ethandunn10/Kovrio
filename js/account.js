@@ -6,6 +6,11 @@
 (function () {
   const $ = (id) => document.getElementById(id);
   const auth = window.KovrioAuth;
+  const next = auth ? auth.safeNext(new URLSearchParams(location.search).get("next")) : "/index.html";
+
+  function goToApp() {
+    location.replace(next.replace(/^\//, ""));
+  }
 
   // Turn Supabase's error messages into something a student understands.
   function friendly(err) {
@@ -15,6 +20,9 @@
       return "There's already an account with that email. Try logging in instead.";
     }
     if (/rate limit|too many/i.test(msg)) return "Too many tries. Wait a few minutes and try again.";
+    if (/provider is not enabled|unsupported provider/i.test(msg)) {
+      return "Google sign-in isn't turned on yet. Use email for now.";
+    }
     if (/password/i.test(msg)) return "That password doesn't work. Use at least 8 characters.";
     if (/email/i.test(msg)) return "That email doesn't look right. Check it and try again.";
     if (/failed to fetch|network/i.test(msg)) return "Couldn't reach Kovrio. Check your internet and try again.";
@@ -28,7 +36,7 @@
   }
 
   function setBusy(busy) {
-    ["login-button", "signup-button", "logout-button", "delete-button"].forEach((id) => {
+    ["google-button", "login-button", "signup-button", "logout-button", "delete-button"].forEach((id) => {
       const btn = $(id);
       if (btn) btn.disabled = busy;
     });
@@ -40,6 +48,7 @@
     $("logged-out").classList.toggle("hidden", !!user);
     $("logged-in").classList.toggle("hidden", !user);
     if (user) $("account-email").textContent = user.email;
+    $("account-title").textContent = user ? "Your account" : "Welcome to Kovrio";
   }
 
   // Checks the form before bothering the server. (The server checks again --
@@ -74,7 +83,7 @@
         await auth.signIn(form.email, form.password);
       }
       $("auth-password").value = "";
-      render();
+      goToApp();
     } catch (err) {
       showMessage(msg, friendly(err), true);
     } finally {
@@ -88,6 +97,11 @@
       return;
     }
     await auth.ready;
+    // Already logged in and arrived from a locked page? Go straight back.
+    if (auth.getUser() && new URLSearchParams(location.search).has("next")) {
+      goToApp();
+      return;
+    }
     render();
 
     $("auth-form").addEventListener("submit", (e) => {
@@ -95,6 +109,16 @@
       handle("login");
     });
     $("signup-button").addEventListener("click", () => handle("signup"));
+
+    $("google-button").addEventListener("click", async () => {
+      setBusy(true);
+      try {
+        await auth.signInWithGoogle(next); // leaves the page on success
+      } catch (err) {
+        showMessage($("auth-message"), friendly(err), true);
+        setBusy(false);
+      }
+    });
 
     $("logout-button").addEventListener("click", async () => {
       setBusy(true);

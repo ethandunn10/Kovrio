@@ -1071,3 +1071,78 @@ button:disabled {
     margin-left: 0;
   }
 }
+
+/* ---- Google button + "or use email" divider -------------------------- */
+.btn-google {
+  display: inline-block;
+  font: inherit;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  min-height: 48px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius);
+  background: #ffffff;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.btn-google:hover {
+  border-color: var(--color-primary);
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 380px;
+  margin-top: 1.5rem;
+  color: var(--color-muted);
+  font-size: 0.85rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  border-top: 1px solid var(--color-border);
+}
+
+/* ---- Login gate -------------------------------------------------------
+   App pages start with <html class="auth-gate">, which hides the page
+   until js/auth.js confirms the visitor is logged in (or sends them to
+   the sign-in screen). Stops a flash of the app before the redirect. */
+html.auth-gate body {
+  visibility: hidden;
+}
+
+/* "Log out" sits in the nav like a link, but it's a button. */
+.page-header nav .nav-logout {
+  margin-left: 1.25rem;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-weight: 500;
+  font-size: 0.92rem;
+  color: var(--color-on-ink-muted);
+  cursor: pointer;
+}
+
+.page-header nav .nav-logout:hover {
+  color: var(--color-on-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--color-primary);
+  text-decoration-thickness: 2px;
+}
+
+.footer-account {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 640px) {
+  .page-header nav .nav-logout {
+    margin-left: 0;
+  }
+}

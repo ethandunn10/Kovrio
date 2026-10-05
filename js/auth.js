@@ -174,7 +174,13 @@
 
   async function signUp(email, password) {
     if (!client) throw new Error("Accounts are unavailable right now. Try again later.");
-    const { data, error } = await client.auth.signUp({ email, password });
+    const { data, error } = await client.auth.signUp({
+      email,
+      password,
+      // Where the confirmation link sends people, if confirmation is ever
+      // turned on. Must be listed under Supabase -> Auth -> URL Configuration.
+      options: { emailRedirectTo: `${location.origin}/account.html` },
+    });
     if (error) throw error;
     // If email confirmation is on in Supabase, there's no session yet.
     if (!data.session) return { needsConfirmation: true };
@@ -189,6 +195,25 @@
     if (error) throw error;
     currentUser = data.user;
     await pullAndMerge();
+  }
+
+  // Sends the student to Google's sign-in page. Google sends them back
+  // logged in, and init() below picks up the session from the
+  // URL and syncs their progress. Works only once the Google provider is
+  // turned on in Supabase.
+  // `next` is the page to land on afterwards (defaults to the home page).
+  // prompt=select_account makes Google always show its account picker, so
+  // students can tap whichever Google account is already on their device.
+  async function signInWithGoogle(next) {
+    if (!client) throw new Error("Accounts are unavailable right now. Try again later.");
+    const { error } = await client.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${location.origin}${safeNext(next)}`,
+        queryParams: { prompt: "select_account" },
+      },
+    });
+    if (error) throw error;
   }
 
   async function signOut() {
@@ -214,13 +239,62 @@
     return currentUser;
   }
 
+  // ---- Login gate ------------------------------------------------------
+  // Pages marked <html class="auth-gate"> require a login. Logged-out
+  // visitors get sent to the sign-in screen (account.html), which sends
+  // them back to the page they wanted afterwards. Logged-in visitors stay
+  // logged in on that browser until they log out, so they go straight in.
+  //
+  // This is a convenience, NOT security: anyone can delete this code in
+  // DevTools. What protects students' data is Row Level Security in the
+  // database. All someone gains by skipping the gate is the free quizzes.
+
+  const gated = document.documentElement.classList.contains("auth-gate");
+
+  function openGate() {
+    document.documentElement.classList.remove("auth-gate");
+  }
+
+  // Only ever redirect to a page on this site, never an outside URL that
+  // someone slipped into ?next= (a classic phishing trick).
+  function safeNext(next) {
+    if (typeof next === "string" && /^\/[A-Za-z0-9_\-./?=&%]*$/.test(next) && !next.startsWith("//")) {
+      return next;
+    }
+    return "/index.html";
+  }
+
+  function sendToLogin() {
+    const next = encodeURIComponent(location.pathname + location.search);
+    location.replace(`account.html?next=${next}`);
+  }
+
+  // Any [data-logout] button (the "Log out" in the nav) logs out and goes
+  // to the sign-in screen.
+  document.addEventListener("click", async (e) => {
+    const btn = e.target.closest("[data-logout]");
+    if (!btn) return;
+    btn.disabled = true;
+    try {
+      await signOut();
+    } finally {
+      location.replace("account.html");
+    }
+  });
+
   // ---- Startup ---------------------------------------------------------
 
   async function init() {
-    if (!client) return;
+    // If Supabase couldn't load (ad blocker, school filter), let them in
+    // rather than locking them out of the whole site.
+    if (!client) return openGate();
     const { data } = await client.auth.getSession();
     currentUser = data.session ? data.session.user : null;
-    if (!currentUser) return;
+    if (!currentUser) {
+      if (gated) return sendToLogin();
+      return openGate();
+    }
+    openGate();
 
     const changed = await pullAndMerge();
     // Reload at most once per tab, so a sync problem can never loop.
@@ -230,7 +304,20 @@
     }
   }
 
-  const ready = init().catch((err) => console.error("Account sync failed:", err));
+  const ready = init().catch((err) => {
+    console.error("Account check failed:", err);
+    openGate();
+  });
 
-  window.KovrioAuth = { ready, getUser, signUp, signIn, signOut, deleteAccount, queueUpload };
+  window.KovrioAuth = {
+    ready,
+    getUser,
+    signUp,
+    signIn,
+    signInWithGoogle,
+    signOut,
+    deleteAccount,
+    queueUpload,
+    safeNext,
+  };
 })();

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Account — Kovrio</title>
+  <title>Sign in — Kovrio</title>
   <meta name="description" content="Log in to Kovrio to save your AP® quiz progress across devices." />
 
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml" />
@@ -22,28 +22,29 @@
   <header class="page-header">
     <div class="header-inner">
       <a class="site-title" href="index.html">Kovrio<span class="site-tagline">AP® Practice Quizzes</span></a>
-      <nav>
-        <a href="index.html">Home</a>
-        <a href="history.html">History</a>
-        <a href="insights.html">Insights</a>
-        <a href="about.html">About</a>
-        <a class="is-current" href="account.html">Account</a>
-      </nav>
     </div>
   </header>
 
   <main class="about-content account-page">
-    <h1>Your account</h1>
+    <h1 id="account-title">Welcome to Kovrio</h1>
     <p id="account-loading" class="page-lede">Checking whether you're logged in...</p>
 
     <!-- Logged out: one form, two buttons (log in / sign up). -->
     <section id="logged-out" class="hidden">
       <p>
-        You don't need an account to use Kovrio. Logging in just saves your
-        progress to your account, so your scores, History and Insights follow
-        you to any device. Whatever you've done in this browser so far gets
-        added to your account when you log in.
+        Sign in or create a free account to start. Your scores, History and
+        Insights save to your account, so they're there on any device.
       </p>
+
+      <div class="auth-buttons">
+        <button id="google-button" class="btn-google" type="button">Continue with Google</button>
+      </div>
+      <p class="auth-hint">
+        School Google accounts sometimes block outside sites. If yours does,
+        use a personal Gmail or sign in with email below.
+      </p>
+
+      <p class="auth-divider"><span>or use email</span></p>
 
       <form id="auth-form" class="auth-form" novalidate>
         <label for="auth-email">Email</label>
@@ -65,7 +66,7 @@
     <!-- Logged in. -->
     <section id="logged-in" class="hidden">
       <p>Logged in as <strong id="account-email"></strong>.</p>
-      <p>Your progress saves to your account automatically after every quiz.</p>
+      <p>Your progress saves to your account automatically after every quiz. <a href="index.html">Back to quizzes →</a></p>
       <div class="auth-buttons">
         <button id="logout-button" class="btn-primary" type="button">Log out</button>
       </div>
@@ -93,7 +94,7 @@
   </main>
 
   <footer class="page-footer">
-    <a href="index.html">← Back to quizzes</a>
+    <a href="about.html">About Kovrio</a>
     <p class="footer-legal">AP&reg; is a trademark registered by the College Board, which is not affiliated with, and does not endorse, this product.</p>
   </footer>
 
