@@ -23,6 +23,10 @@
     console.error("Usage tracking unavailable (Supabase client failed to load):", err);
   }
 
+  // Shared with js/auth.js so the whole site uses ONE Supabase client
+  // (two clients would fight over the saved login session).
+  window.KovrioSupabase = client;
+
   function getAnonId() {
     let anonId = localStorage.getItem("anonId");
     if (!anonId) {
