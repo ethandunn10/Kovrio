@@ -37,6 +37,26 @@
     el.classList.remove("hidden");
   }
 
+  // Kovrio is 13+ (US COPPA law). New accounts -- email sign-up or Google,
+  // which can create an account -- need this box checked. Remembered in this
+  // browser so returning students don't re-check it every time.
+  const AGE_KEY = "kovrio_age_ok";
+
+  function ageConfirmed() {
+    const box = $("age-check");
+    if (box.checked) {
+      try {
+        localStorage.setItem(AGE_KEY, "1");
+      } catch (err) {
+        // storage blocked: fine, they'll just re-check next time
+      }
+      $("age-message").classList.add("hidden");
+      return true;
+    }
+    showMessage($("age-message"), "Check the box to confirm you're 13 or older and agree to the Terms and Privacy Policy.", true);
+    return false;
+  }
+
   function setBusy(busy) {
     ["google-button", "login-button", "signup-button", "logout-button", "delete-button"].forEach((id) => {
       const btn = $(id);
@@ -73,6 +93,7 @@
       showMessage(msg, err.message, true);
       return;
     }
+    if (action === "signup" && !ageConfirmed()) return;
     setBusy(true);
     try {
       if (action === "signup") {
@@ -106,6 +127,12 @@
     }
     render();
 
+    try {
+      if (localStorage.getItem(AGE_KEY) === "1") $("age-check").checked = true;
+    } catch (err) {
+      // ignore
+    }
+
     $("auth-form").addEventListener("submit", (e) => {
       e.preventDefault();
       handle("login");
@@ -113,6 +140,7 @@
     $("signup-button").addEventListener("click", () => handle("signup"));
 
     $("google-button").addEventListener("click", async () => {
+      if (!ageConfirmed()) return;
       setBusy(true);
       try {
         await auth.signInWithGoogle(next); // leaves the page on success

@@ -1146,3 +1146,33 @@ html.auth-gate body {
     margin-left: 0;
   }
 }
+
+/* ---- 13+ checkbox (account.html) + footer legal links ---------------- */
+.age-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  max-width: 420px;
+  margin-top: 1.25rem;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.age-check input {
+  width: 20px;
+  height: 20px;
+  margin-top: 0.1rem;
+  flex-shrink: 0;
+  accent-color: var(--color-ink);
+}
+
+.footer-links,
+.footer-account {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.legal-page h2 {
+  margin-top: 1.75rem;
+}
