@@ -40,9 +40,18 @@
   async function logAttempt(weekId, score, total) {
     if (!client) return;
     const anonId = getAnonId();
+    // Which subject this quiz belongs to (e.g. "ap-bio"), looked up from the
+    // lesson/unit id via js/subjects.js. null if it can't be found.
+    let subject = null;
+    const lookup = window.AllAPSubjects;
+    if (lookup) {
+      const hit = lookup.findLesson(weekId) || lookup.findUnit(weekId);
+      if (hit) subject = hit.subject.id;
+    }
     try {
       await client.from("Attempts").insert({
         anon_id: anonId,
+        subject,
         question_id: weekId, // holds the week id, e.g. "week-1" (see README note on the table)
         was_correct: score === total, // true only on a perfect run -- simple signal, not per-question
       });
