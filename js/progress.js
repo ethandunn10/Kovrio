@@ -60,6 +60,31 @@
     } catch (err) {
       console.error("Saving progress data failed:", err);
     }
+    // If the student is logged in, js/auth.js also saves this copy to
+    // their account. Does nothing when logged out or on pages without it.
+    if (window.KovrioAuth) window.KovrioAuth.queueUpload(data);
+  }
+
+  // Used only by js/auth.js when syncing with an account. _writeAll skips
+  // the upload because auth.js uploads the merged copy itself.
+  function readAll() {
+    return load();
+  }
+
+  function writeAll(data) {
+    try {
+      localStorage.setItem(storageKey(), JSON.stringify(data));
+    } catch (err) {
+      console.error("Saving progress data failed:", err);
+    }
+  }
+
+  function clearLocal() {
+    try {
+      localStorage.removeItem(storageKey());
+    } catch (err) {
+      console.error("Clearing progress data failed:", err);
+    }
   }
 
   // Appends one finished attempt to the history log, trimming the oldest
@@ -214,5 +239,8 @@
     getLessonRankings,
     getUnitRankings,
     MASTERY_THRESHOLD,
+    _readAll: readAll,
+    _writeAll: writeAll,
+    _clearLocal: clearLocal,
   };
 })();

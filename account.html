@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in — Kovrio</title>
+  <meta name="description" content="Log in to Kovrio to save your AP® quiz progress across devices." />
+
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#1e2340" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="page-header">
+    <div class="header-inner">
+      <a class="site-title" href="index.html">Kovrio<span class="site-tagline">AP® Practice Quizzes</span></a>
+    </div>
+  </header>
+
+  <main class="about-content account-page">
+    <h1 id="account-title">Welcome to Kovrio</h1>
+    <p id="account-loading" class="page-lede">Checking whether you're logged in...</p>
+
+    <!-- Logged out: one form, two buttons (log in / sign up). -->
+    <section id="logged-out" class="hidden">
+      <p>
+        Kovrio is 100% free. Sign in or create a free account to start. Your scores, History and
+        Insights save to your account, so they're there on any device.
+      </p>
+
+      <label class="age-check">
+        <input id="age-check" type="checkbox" />
+        <span>
+          I'm 13 or older and I agree to the
+          <a href="terms.html" target="_blank" rel="noopener">Terms of Use</a> and
+          <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.
+        </span>
+      </label>
+      <p id="age-message" class="auth-message is-error hidden" role="alert"></p>
+
+      <div class="auth-buttons">
+        <button id="google-button" class="btn-google" type="button">Continue with Google</button>
+      </div>
+      <p class="auth-hint">
+        School Google accounts sometimes block outside sites. If yours does,
+        use a personal Gmail or sign in with email below.
+      </p>
+
+      <p class="auth-divider"><span>or use email</span></p>
+
+      <form id="auth-form" class="auth-form" novalidate>
+        <label for="auth-email">Email</label>
+        <input id="auth-email" type="email" autocomplete="email" required />
+
+        <label for="auth-password">Password</label>
+        <input id="auth-password" type="password" autocomplete="current-password" minlength="8" required />
+        <p class="auth-hint">At least 8 characters.</p>
+
+        <p id="auth-message" class="auth-message hidden" role="alert"></p>
+
+        <div class="auth-buttons">
+          <button id="login-button" class="btn-primary" type="submit">Log in</button>
+          <button id="signup-button" class="btn-secondary" type="button">Create free account</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Logged in. -->
+    <section id="logged-in" class="hidden">
+      <p>Logged in as <strong id="account-email"></strong>.</p>
+      <p>Your progress saves to your account automatically after every quiz. <a href="index.html">Back to quizzes →</a></p>
+      <div class="auth-buttons">
+        <button id="logout-button" class="btn-primary" type="button">Log out</button>
+      </div>
+      <p class="auth-hint">
+        Logging out also clears your progress from this browser, so the next
+        person on a shared computer doesn't see it. It stays saved in your account.
+      </p>
+
+      <h2>Delete account</h2>
+      <p>
+        This permanently deletes your account and all progress saved to it.
+        It can't be undone.
+      </p>
+      <p id="delete-message" class="auth-message hidden" role="alert"></p>
+      <button id="delete-button" class="btn-secondary btn-danger" type="button">Delete my account</button>
+    </section>
+
+    <h2>What Kovrio stores</h2>
+    <p>
+      If you make an account: your email, a scrambled version of your password
+      (Kovrio never sees or stores the real one), and your quiz progress. That's it.
+      It's never sold or shared, and it's only used to save your progress.
+      Deleting your account removes all of it.
+      <a href="privacy.html">Read the full Privacy Policy</a>.
+    </p>
+  </main>
+
+  <footer class="page-footer">
+    <a href="about.html">About Kovrio</a>
+    <p class="footer-links"><a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Use</a></p>
+    <p class="footer-legal">AP&reg; is a trademark registered by the College Board, which is not affiliated with, and does not endorse, this product.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+  <script src="js/tracking.js"></script>
+  <script src="js/progress.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/account.js"></script>
+</body>
+</html>

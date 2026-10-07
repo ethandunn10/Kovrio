@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="auth-gate">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -30,6 +30,7 @@
         <a href="history.html">History</a>
         <a href="insights.html">Insights</a>
         <a href="about.html">About</a>
+        <button class="nav-logout" type="button" data-logout>Log out</button>
       </nav>
     </div>
   </header>
@@ -61,16 +62,20 @@
     </aside>
   </main>
 
+
   <footer class="page-footer">
     Free study aid, not official course material.
     <a href="about.html">Read more</a>.
+    <p class="footer-account"><a href="account.html">Account settings</a></p>
+    <p class="footer-links"><a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Use</a></p>
     <p class="footer-legal">AP® is a trademark registered by the College Board, which is not affiliated with, and does not endorse, this product.</p>
   </footer>
 
   <!-- Anonymous usage tracking + local progress tracking. -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
   <script src="js/tracking.js"></script>
   <script src="js/progress.js"></script>
+  <script src="js/auth.js"></script>
 
   <!-- Data first, then the scripts that read it. -->
   <!-- Each subject's registry defines its own globals (AP Gov: QUIZ_LIST /
