@@ -223,6 +223,14 @@
     clearThisBrowser();
   }
 
+  // Sets a new password on the logged-in account. Works for Google-only
+  // accounts too, which then gain email + password sign-in.
+  async function setPassword(password) {
+    if (!client || !currentUser) throw new Error("You're not logged in.");
+    const { error } = await client.auth.updateUser({ password });
+    if (error) throw error;
+  }
+
   async function deleteAccount() {
     if (!client || !currentUser) throw new Error("You're not logged in.");
     clearTimeout(uploadTimer);
@@ -316,6 +324,7 @@
     signIn,
     signInWithGoogle,
     signOut,
+    setPassword,
     deleteAccount,
     queueUpload,
     safeNext,

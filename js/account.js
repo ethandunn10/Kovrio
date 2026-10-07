@@ -58,7 +58,7 @@
   }
 
   function setBusy(busy) {
-    ["google-button", "login-button", "signup-button", "logout-button", "delete-button"].forEach((id) => {
+    ["google-button", "login-button", "signup-button", "logout-button", "password-button", "delete-button"].forEach((id) => {
       const btn = $(id);
       if (btn) btn.disabled = busy;
     });
@@ -146,6 +146,35 @@
         await auth.signInWithGoogle(next); // leaves the page on success
       } catch (err) {
         showMessage($("auth-message"), friendly(err), true);
+        setBusy(false);
+      }
+    });
+
+    $("password-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const msg = $("password-message");
+      const pw = $("new-password").value;
+      if (pw.length < 8) {
+        showMessage(msg, "Use at least 8 characters.", true);
+        return;
+      }
+      setBusy(true);
+      try {
+        await auth.setPassword(pw);
+        $("new-password").value = "";
+        showMessage(msg, "Password saved. You can now sign in with your email and this password.", false);
+      } catch (err) {
+        const m = (err && err.message) || "";
+        showMessage(
+          msg,
+          /different from the old/i.test(m)
+            ? "That's already your password. Pick a new one."
+            : /reauthentic|recent/i.test(m)
+              ? "For safety, log out and back in, then try again."
+              : friendly(err),
+          true
+        );
+      } finally {
         setBusy(false);
       }
     });

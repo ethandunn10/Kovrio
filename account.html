@@ -85,6 +85,21 @@
         person on a shared computer doesn't see it. It stays saved in your account.
       </p>
 
+      <h2>Password</h2>
+      <p>
+        Set or change the password for signing in with email. If you signed up
+        with Google, setting one here lets you sign in either way.
+      </p>
+      <form id="password-form" class="auth-form" novalidate>
+        <label for="new-password">New password</label>
+        <input id="new-password" type="password" autocomplete="new-password" minlength="8" required />
+        <p class="auth-hint">At least 8 characters.</p>
+        <p id="password-message" class="auth-message hidden" role="alert"></p>
+        <div class="auth-buttons">
+          <button id="password-button" class="btn-secondary" type="submit">Save password</button>
+        </div>
+      </form>
+
       <h2>Delete account</h2>
       <p>
         This permanently deletes your account and all progress saved to it.
