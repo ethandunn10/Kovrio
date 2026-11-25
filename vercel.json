@@ -1,0 +1,5 @@
+{
+  "redirects": [
+    { "source": "/((?!shutdown\\.html$).*)", "destination": "/shutdown.html", "permanent": false }
+  ]
+}
